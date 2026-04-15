@@ -64,6 +64,18 @@ Example metric groups:
 - `lpr_inference_overload_total`
 - `lpr_upload_failure_total`
 
+### `GET /ui`
+
+Browser-based testing page for the OCR API.
+
+Features:
+- Set API base URL.
+- Submit `image_path` to `POST /detect-plate`.
+- View raw JSON response.
+- Preview annotated image when `image_url` is returned.
+
+Open `http://localhost:8000/ui` after starting the service.
+
 ---
 
 ### `POST /detect-plate`

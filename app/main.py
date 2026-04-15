@@ -1,11 +1,14 @@
 from contextlib import asynccontextmanager
 import logging
-from fastapi import FastAPI, Response
+from pathlib import Path
+from fastapi import FastAPI, HTTPException, Response
+from fastapi.responses import HTMLResponse
 from app.routes import plate
 from app.services.http_client import build_http_client_config, create_http_client
 from app.services.metrics import default_metrics
 
 logger = logging.getLogger(__name__)
+_UI_FILE = Path(__file__).resolve().parent / "static" / "index.html"
 
 
 @asynccontextmanager
@@ -42,3 +45,10 @@ def health_check():
 def metrics() -> Response:
     payload, content_type = default_metrics.render_latest()
     return Response(content=payload, media_type=content_type)
+
+
+@app.get("/ui", include_in_schema=False)
+def testing_ui() -> HTMLResponse:
+    if not _UI_FILE.exists():
+        raise HTTPException(status_code=500, detail="UI file is missing")
+    return HTMLResponse(content=_UI_FILE.read_text(encoding="utf-8"))
