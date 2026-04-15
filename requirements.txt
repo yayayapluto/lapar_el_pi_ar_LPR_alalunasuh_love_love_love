@@ -4,6 +4,6 @@ opencv-python
 onnxruntime
 fast-alpr
 python-dotenv
-httpx
+httpx[http2]
 numpy
 prometheus-client

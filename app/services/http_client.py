@@ -1,7 +1,11 @@
 import os
+import logging
 from dataclasses import dataclass
 
 import httpx
+
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -46,4 +50,10 @@ def create_http_client(config: HTTPClientConfig | None = None) -> httpx.AsyncCli
         max_keepalive_connections=cfg.max_keepalive_connections,
         keepalive_expiry=cfg.keepalive_expiry_sec,
     )
-    return httpx.AsyncClient(limits=limits, timeout=cfg.timeout_sec, http2=True)
+    try:
+        return httpx.AsyncClient(limits=limits, timeout=cfg.timeout_sec, http2=True)
+    except ImportError as exc:
+        if "h2" not in str(exc).lower():
+            raise
+        logger.warning("h2 package is not installed; falling back to HTTP/1.1 for S3 client")
+        return httpx.AsyncClient(limits=limits, timeout=cfg.timeout_sec, http2=False)

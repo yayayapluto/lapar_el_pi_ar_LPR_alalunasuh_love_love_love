@@ -1,7 +1,12 @@
 SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
-PYTHON ?= python
+BOOTSTRAP_PYTHON ?= python
+ifeq ($(OS),Windows_NT)
+PYTHON ?= venv/Scripts/python.exe
+else
+PYTHON ?= venv/bin/python
+endif
 PIP ?= $(PYTHON) -m pip
 UVICORN ?= uvicorn
 HOST ?= 0.0.0.0
@@ -14,7 +19,7 @@ help: ## Show available commands
 	@awk 'BEGIN {FS = ":.*##"; printf "\nAvailable commands:\n"} /^[a-zA-Z0-9_-]+:.*##/ {printf "  %-16s %s\n", $$1, $$2} END {print ""}' $(MAKEFILE_LIST)
 
 venv: ## Create virtual environment in ./venv
-	$(PYTHON) -m venv venv
+	$(BOOTSTRAP_PYTHON) -m venv venv
 
 install: ## Install dependencies from requirements.txt
 	$(PIP) install -r requirements.txt

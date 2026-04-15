@@ -1,7 +1,8 @@
 import os
 import unittest
+from unittest.mock import patch
 
-from app.services.http_client import build_http_client_config
+from app.services.http_client import HTTPClientConfig, build_http_client_config, create_http_client
 
 
 class TestHTTPClientConfig(unittest.TestCase):
@@ -42,6 +43,44 @@ class TestHTTPClientConfig(unittest.TestCase):
         self.assertEqual(1, cfg.max_keepalive_connections)
         self.assertEqual(120.0, cfg.keepalive_expiry_sec)
         self.assertEqual(1.0, cfg.timeout_sec)
+
+
+class TestCreateHTTPClient(unittest.TestCase):
+    def test_create_http_client_uses_http2_when_available(self) -> None:
+        cfg = HTTPClientConfig(20, 10, 10.0, 15.0)
+        sentinel = object()
+
+        with patch("app.services.http_client.httpx.AsyncClient", return_value=sentinel) as mock_client:
+            result = create_http_client(cfg)
+
+        self.assertIs(sentinel, result)
+        self.assertEqual(1, mock_client.call_count)
+        self.assertTrue(mock_client.call_args.kwargs["http2"])
+
+    def test_create_http_client_falls_back_to_http1_when_h2_missing(self) -> None:
+        cfg = HTTPClientConfig(20, 10, 10.0, 15.0)
+        sentinel = object()
+
+        with patch(
+            "app.services.http_client.httpx.AsyncClient",
+            side_effect=[ImportError("Using http2=True, but the 'h2' package is not installed."), sentinel],
+        ) as mock_client:
+            result = create_http_client(cfg)
+
+        self.assertIs(sentinel, result)
+        self.assertEqual(2, mock_client.call_count)
+        self.assertTrue(mock_client.call_args_list[0].kwargs["http2"])
+        self.assertFalse(mock_client.call_args_list[1].kwargs["http2"])
+
+    def test_create_http_client_reraises_unrelated_import_error(self) -> None:
+        cfg = HTTPClientConfig(20, 10, 10.0, 15.0)
+
+        with patch(
+            "app.services.http_client.httpx.AsyncClient",
+            side_effect=ImportError("unexpected import error"),
+        ):
+            with self.assertRaises(ImportError):
+                create_http_client(cfg)
 
 
 class _patched_env:
