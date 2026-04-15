@@ -69,6 +69,13 @@ class TestPlateContract(unittest.TestCase):
         self.assertEqual(503, response.status_code)
         self.assertEqual("OCR service busy, please retry", response.json()["detail"])
 
+    def test_detect_plate_returns_422_with_valueerror_detail(self) -> None:
+        with patch.object(plate, "run_inference", side_effect=ValueError("Invalid image format")):
+            response = self.client.post("/detect-plate", json={"image_path": "/tmp/image.jpg"})
+
+        self.assertEqual(422, response.status_code)
+        self.assertEqual("Invalid image format", response.json()["detail"])
+
 
 if __name__ == "__main__":
     unittest.main()

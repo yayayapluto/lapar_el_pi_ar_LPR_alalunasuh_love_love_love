@@ -93,11 +93,12 @@ async def detect_plate_endpoint(
         total_ms = (time.perf_counter() - total_start) * 1000
         default_metrics.observe_request("not_found", infer_ms, 0.0, total_ms)
         raise HTTPException(status_code=404, detail="Cannot find image")
-    except ValueError:
+    except ValueError as e:
         infer_ms = (time.perf_counter() - infer_start) * 1000
         total_ms = (time.perf_counter() - total_start) * 1000
         default_metrics.observe_request("no_plate", infer_ms, 0.0, total_ms)
-        raise HTTPException(status_code=422, detail="No plate detected in the provided image")
+        detail = str(e) if str(e) else "No plate detected in the provided image"
+        raise HTTPException(status_code=422, detail=detail)
     except Exception as e:
         infer_ms = (time.perf_counter() - infer_start) * 1000
         total_ms = (time.perf_counter() - total_start) * 1000

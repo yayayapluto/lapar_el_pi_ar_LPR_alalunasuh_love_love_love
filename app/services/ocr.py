@@ -40,12 +40,12 @@ def run_inference(image_path: str) -> dict:
             raise FileNotFoundError(f"Failed to read image at path: {image_path}")
 
     frame_bgr = _maybe_resize(frame_bgr)
+    frame_bgr = _coerce_uint8_array(frame_bgr, "input image")
     load_ms = (time.perf_counter() - load_start) * 1000
 
-    frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
-
     predict_start = time.perf_counter()
-    results = _alpr.predict(frame_rgb)
+    drawn = _draw_predictions_result(frame_bgr)
+    results = drawn["results"]
     predict_ms = (time.perf_counter() - predict_start) * 1000
 
     if not results:
@@ -53,21 +53,23 @@ def run_inference(image_path: str) -> dict:
 
     best = max(
         (r for r in results if r.ocr),
-        key=lambda r: r.ocr.confidence,
+        key=lambda r: _confidence_scalar(r.ocr.confidence),
         default=None,
     )
     if best is None:
         raise ValueError("No plate detected in the provided image.")
 
+    confidence = _confidence_scalar(best.ocr.confidence)
+
     stem = Path(image_path).stem.split("?")[0]
 
     encode_start = time.perf_counter()
-    annotated_bytes = _encode_annotated(frame_rgb, results)
+    annotated_bytes = _encode_annotated(drawn["image"])
     encode_ms = (time.perf_counter() - encode_start) * 1000
 
     return {
         "detected_plate": best.ocr.text,
-        "confidence": round(best.ocr.confidence, 4),
+        "confidence": confidence,
         "annotated_bytes": annotated_bytes,
         "stem": stem,
         "timings_ms": {
@@ -78,12 +80,33 @@ def run_inference(image_path: str) -> dict:
     }
 
 
-def _encode_annotated(frame_rgb, results) -> bytes:
-    """Draw predictions and encode to JPEG bytes. Returns empty bytes on failure."""
-    annotated_rgb = _alpr.draw_predictions(frame_rgb)
-    if annotated_rgb is None:
+def _draw_predictions_result(frame_bgr: np.ndarray) -> dict:
+    drawn = _alpr.draw_predictions(frame_bgr)
+    if drawn is None:
+        return {"image": None, "results": []}
+
+    image = getattr(drawn, "image", None)
+    results = getattr(drawn, "results", None)
+
+    if image is not None and results is not None:
+        return {"image": image, "results": results}
+
+    # Backward compatibility for older fast-alpr behavior where draw_predictions
+    # may return only an annotated ndarray.
+    return {
+        "image": drawn,
+        "results": _alpr.predict(frame_bgr),
+    }
+
+
+def _encode_annotated(annotated_image) -> bytes:
+    """Encode annotated image to JPEG bytes. Returns empty bytes on failure."""
+    if annotated_image is None:
         return b""
-    annotated_bgr = cv2.cvtColor(annotated_rgb, cv2.COLOR_RGB2BGR)
+    try:
+        annotated_bgr = _to_bgr_for_jpeg(annotated_image)
+    except ValueError:
+        return b""
     ok, buf = cv2.imencode(
         ".jpg",
         annotated_bgr,
@@ -120,6 +143,65 @@ def _maybe_resize(frame_bgr):
     target_w = max(1, int(width * scale))
     target_h = max(1, int(height * scale))
     return cv2.resize(frame_bgr, (target_w, target_h), interpolation=cv2.INTER_AREA)
+
+
+def _to_bgr_for_jpeg(image) -> np.ndarray:
+    arr = _coerce_uint8_array(image, "annotated image")
+    if arr.ndim == 2:
+        return cv2.cvtColor(arr, cv2.COLOR_GRAY2BGR)
+    if arr.ndim != 3:
+        raise ValueError("Unsupported annotated image shape")
+
+    channels = arr.shape[2]
+    if channels == 3:
+        return arr
+    if channels == 4:
+        return cv2.cvtColor(arr, cv2.COLOR_BGRA2BGR)
+    raise ValueError("Unsupported annotated image channels")
+
+
+def _coerce_uint8_array(image, context: str) -> np.ndarray:
+    if isinstance(image, np.ndarray):
+        arr = image
+    else:
+        try:
+            arr = np.asarray(image)
+        except Exception as exc:
+            raise ValueError(f"Invalid {context} format") from exc
+
+    if arr.size == 0:
+        raise ValueError(f"Empty {context}")
+
+    if arr.dtype.kind not in {"u", "i", "f", "b"}:
+        raise ValueError(f"Invalid {context} dtype")
+
+    if arr.dtype == np.uint8:
+        return arr
+
+    clipped = np.clip(arr, 0, 255)
+    return clipped.astype(np.uint8)
+
+
+def _confidence_scalar(value) -> float:
+    if isinstance(value, (int, float, np.integer, np.floating)):
+        conf = float(value)
+    elif isinstance(value, (list, tuple, np.ndarray)):
+        try:
+            arr = np.asarray(value, dtype=float).reshape(-1)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("Invalid OCR confidence format") from exc
+        if arr.size == 0:
+            raise ValueError("Invalid OCR confidence format")
+        conf = float(np.mean(arr))
+    else:
+        try:
+            conf = float(value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("Invalid OCR confidence format") from exc
+
+    if np.isnan(conf) or np.isinf(conf):
+        raise ValueError("Invalid OCR confidence value")
+    return conf
 
 
 def _load_from_url(url: str):

@@ -37,6 +37,8 @@ class TestUIRoute(unittest.TestCase):
         self.assertIn("text/html", response.headers.get("content-type", ""))
         self.assertIn("LPR Service Test UI", response.text)
         self.assertIn("/detect-plate", response.text)
+        self.assertIn("Input image", response.text)
+        self.assertIn("Output image", response.text)
 
 
 if __name__ == "__main__":

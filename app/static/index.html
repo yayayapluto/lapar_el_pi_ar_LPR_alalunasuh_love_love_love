@@ -1,395 +1,596 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LPR Service Test UI</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #f8f4ec;
-      --card: #fffef9;
-      --ink: #1a1a18;
-      --muted: #696456;
-      --accent: #e0682f;
-      --accent-soft: #ffd6bd;
-      --line: #e7dccb;
-      --success: #1f7a3c;
-      --error: #b3392f;
-      --shadow: 0 20px 50px rgba(50, 26, 10, 0.12);
-      --radius-xl: 22px;
-      --radius-md: 14px;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LPR Service Test UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #f8f4ec;
+            --card: #fffef9;
+            --ink: #1a1a18;
+            --muted: #696456;
+            --accent: #e0682f;
+            --accent-soft: #ffd6bd;
+            --line: #e7dccb;
+            --success: #1f7a3c;
+            --error: #b3392f;
+            --shadow: 0 20px 50px rgba(50, 26, 10, 0.12);
+            --radius-xl: 22px;
+            --radius-md: 14px;
+        }
 
-    * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
-    body {
-      margin: 0;
-      font-family: "Space Grotesk", sans-serif;
-      color: var(--ink);
-      background:
-        radial-gradient(1200px 500px at -20% -20%, #ffe6c8 0%, transparent 70%),
-        radial-gradient(900px 500px at 110% 0%, #ffd5cf 0%, transparent 65%),
-        var(--bg);
-      min-height: 100vh;
-      padding: 28px 16px;
-    }
+        body {
+            margin: 0;
+            font-family: "Space Grotesk", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(1200px 500px at -20% -20%, #ffe6c8 0%, transparent 70%),
+                radial-gradient(900px 500px at 110% 0%, #ffd5cf 0%, transparent 65%),
+                var(--bg);
+            min-height: 100vh;
+            padding: 28px 16px;
+        }
 
-    .wrap {
-      max-width: 980px;
-      margin: 0 auto;
-      animation: rise 0.55s ease-out;
-    }
+        .wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            animation: rise 0.55s ease-out;
+        }
 
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
 
-    .hero {
-      border: 1px solid var(--line);
-      border-radius: var(--radius-xl);
-      padding: 22px;
-      background: linear-gradient(115deg, #fff7ed 0%, #fffefb 45%, #fff4ef 100%);
-      box-shadow: var(--shadow);
-      margin-bottom: 14px;
-    }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .eyebrow {
-      display: inline-block;
-      font-family: "IBM Plex Mono", monospace;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 12px;
-      color: #925226;
-      background: var(--accent-soft);
-      border: 1px solid #f7b88f;
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 10px;
-    }
+        .hero {
+            border: 1px solid var(--line);
+            border-radius: var(--radius-xl);
+            padding: 22px;
+            background: linear-gradient(115deg, #fff7ed 0%, #fffefb 45%, #fff4ef 100%);
+            box-shadow: var(--shadow);
+            margin-bottom: 14px;
+        }
 
-    h1 {
-      margin: 0;
-      font-size: clamp(28px, 5.4vw, 42px);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-    }
+        .eyebrow {
+            display: inline-block;
+            font-family: "IBM Plex Mono", monospace;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 12px;
+            color: #925226;
+            background: var(--accent-soft);
+            border: 1px solid #f7b88f;
+            padding: 4px 10px;
+            border-radius: 999px;
+            margin-bottom: 10px;
+        }
 
-    .sub {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 15px;
-      max-width: 66ch;
-    }
+        h1 {
+            margin: 0;
+            font-size: clamp(28px, 5.4vw, 42px);
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+        }
 
-    .grid {
-      display: grid;
-      gap: 14px;
-      grid-template-columns: 1.1fr 0.9fr;
-    }
+        .sub {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 15px;
+            max-width: 66ch;
+        }
 
-    .panel {
-      border: 1px solid var(--line);
-      border-radius: var(--radius-xl);
-      background: var(--card);
-      box-shadow: var(--shadow);
-      padding: 18px;
-    }
+        .grid {
+            display: grid;
+            gap: 14px;
+            grid-template-columns: 1.1fr 0.9fr;
+        }
 
-    .title {
-      margin: 0 0 12px;
-      font-size: 18px;
-      font-weight: 700;
-    }
+        .panel {
+            border: 1px solid var(--line);
+            border-radius: var(--radius-xl);
+            background: var(--card);
+            box-shadow: var(--shadow);
+            padding: 18px;
+        }
 
-    .field { margin-bottom: 11px; }
+        .title {
+            margin: 0 0 12px;
+            font-size: 18px;
+            font-weight: 700;
+        }
 
-    .label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 13px;
-      color: var(--muted);
-      font-family: "IBM Plex Mono", monospace;
-    }
+        .field {
+            margin-bottom: 11px;
+        }
 
-    .input {
-      width: 100%;
-      border: 1px solid #d7ccb8;
-      border-radius: 11px;
-      padding: 12px;
-      font-size: 14px;
-      background: #fff;
-      font-family: "IBM Plex Mono", monospace;
-      transition: border-color 120ms ease;
-    }
+        .label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--muted);
+            font-family: "IBM Plex Mono", monospace;
+        }
 
-    .input:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 4px rgba(224, 104, 47, 0.15);
-    }
+        .input {
+            width: 100%;
+            border: 1px solid #d7ccb8;
+            border-radius: 11px;
+            padding: 12px;
+            font-size: 14px;
+            background: #fff;
+            font-family: "IBM Plex Mono", monospace;
+            transition: border-color 120ms ease;
+        }
 
-    .row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-    }
+        .input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(224, 104, 47, 0.15);
+        }
 
-    .chip {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 12px;
-      border: 1px solid #efccad;
-      background: #fff5ec;
-      color: #8b4a1e;
-      border-radius: 999px;
-      padding: 6px 10px;
-      cursor: pointer;
-    }
+        .row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
 
-    .chip:hover { background: #ffeada; }
+        .chip {
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 12px;
+            border: 1px solid #efccad;
+            background: #fff5ec;
+            color: #8b4a1e;
+            border-radius: 999px;
+            padding: 6px 10px;
+            cursor: pointer;
+        }
 
-    .btn {
-      width: 100%;
-      border: 0;
-      border-radius: 13px;
-      padding: 12px 14px;
-      font-weight: 700;
-      font-size: 15px;
-      cursor: pointer;
-      color: #fff;
-      background: linear-gradient(120deg, #dc5f23, #f07f3b);
-      transition: transform 120ms ease, box-shadow 120ms ease;
-      box-shadow: 0 14px 24px rgba(224, 104, 47, 0.25);
-    }
+        .chip:hover {
+            background: #ffeada;
+        }
 
-    .btn:hover { transform: translateY(-1px); }
-    .btn:active { transform: translateY(0); }
-    .btn[disabled] { opacity: 0.6; cursor: not-allowed; }
+        .btn {
+            width: 100%;
+            border: 0;
+            border-radius: 13px;
+            padding: 12px 14px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(120deg, #dc5f23, #f07f3b);
+            transition: transform 120ms ease, box-shadow 120ms ease;
+            box-shadow: 0 14px 24px rgba(224, 104, 47, 0.25);
+        }
 
-    .status {
-      border: 1px solid #dccfb9;
-      background: #fffdf8;
-      border-radius: var(--radius-md);
-      padding: 11px;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 13px;
-      white-space: pre-wrap;
-      margin-bottom: 10px;
-    }
+        .btn:hover {
+            transform: translateY(-1px);
+        }
 
-    .status.ok { border-color: #c9e7d3; color: var(--success); background: #f4fff6; }
-    .status.bad { border-color: #f0c8c2; color: var(--error); background: #fff5f3; }
+        .btn:active {
+            transform: translateY(0);
+        }
 
-    .kpi {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 10px;
-    }
+        .btn[disabled] {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
-    .pill {
-      border: 1px solid #e8dcc8;
-      border-radius: 12px;
-      background: #fffefb;
-      padding: 8px;
-    }
+        .btn.is-loading {
+            position: relative;
+            padding-right: 42px;
+        }
 
-    .pill .k { display: block; color: var(--muted); font-size: 11px; }
-    .pill .v { display: block; font-weight: 700; font-size: 16px; margin-top: 2px; }
+        .btn.is-loading::after {
+            content: "";
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            width: 14px;
+            height: 14px;
+            margin-top: -7px;
+            border: 2px solid rgba(255, 255, 255, 0.55);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
 
-    pre {
-      margin: 0;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      background: #fff;
-      padding: 11px;
-      max-height: 250px;
-      overflow: auto;
-      font-size: 12px;
-      font-family: "IBM Plex Mono", monospace;
-    }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
-    .preview {
-      margin-top: 11px;
-      border: 1px dashed #e1d1b9;
-      border-radius: var(--radius-md);
-      padding: 8px;
-      min-height: 80px;
-      display: grid;
-      place-items: center;
-      background: #fffdf9;
-    }
+        .status {
+            border: 1px solid #dccfb9;
+            background: #fffdf8;
+            border-radius: var(--radius-md);
+            padding: 11px;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
 
-    .preview img {
-      max-width: 100%;
-      border-radius: 10px;
-      display: block;
-    }
+        .status.ok {
+            border-color: #c9e7d3;
+            color: var(--success);
+            background: #f4fff6;
+        }
 
-    .empty {
-      color: var(--muted);
-      font-size: 13px;
-      text-align: center;
-    }
+        .status.bad {
+            border-color: #f0c8c2;
+            color: var(--error);
+            background: #fff5f3;
+        }
 
-    @media (max-width: 840px) {
-      .grid { grid-template-columns: 1fr; }
-      body { padding: 16px 12px; }
-      .hero, .panel { padding: 14px; }
-    }
-  </style>
+        .kpi {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .pill {
+            border: 1px solid #e8dcc8;
+            border-radius: 12px;
+            background: #fffefb;
+            padding: 8px;
+        }
+
+        .pill .k {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .pill .v {
+            display: block;
+            font-weight: 700;
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        pre {
+            margin: 0;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            background: #fff;
+            padding: 11px;
+            max-height: 250px;
+            overflow: auto;
+            font-size: 12px;
+            font-family: "IBM Plex Mono", monospace;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 11px;
+        }
+
+        .preview-card {
+            border: 1px solid #ecdcc8;
+            border-radius: var(--radius-md);
+            background: #fffcf6;
+            padding: 8px;
+        }
+
+        .preview-title {
+            margin: 0 0 6px;
+            font-size: 12px;
+            color: var(--muted);
+            font-family: "IBM Plex Mono", monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .preview {
+            border: 1px dashed #e1d1b9;
+            border-radius: var(--radius-md);
+            padding: 8px;
+            min-height: 140px;
+            display: grid;
+            place-items: center;
+            background: #fffdf9;
+        }
+
+        .preview img {
+            max-width: 100%;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .empty {
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        @media (max-width: 840px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 16px 12px;
+            }
+
+            .hero,
+            .panel {
+                padding: 14px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <main class="wrap">
-    <section class="hero">
-      <span class="eyebrow">LPR test console</span>
-      <h1>LPR Service Test UI</h1>
-      <p class="sub">Use this page to call the Python OCR endpoint directly. Input a local image path or an http/https image URL, submit, then inspect JSON and annotated image output.</p>
-    </section>
+    <main class="wrap">
+        <section class="hero">
+            <span class="eyebrow">LPR test console</span>
+            <h1>LPR Service Test UI</h1>
+            <p class="sub">Use this page to call the Python OCR endpoint directly. Input a local image path or an
+                http/https image URL, submit, then inspect JSON and annotated image output.</p>
+        </section>
 
-    <section class="grid">
-      <article class="panel">
-        <h2 class="title">Request</h2>
-        <form id="form">
-          <div class="field">
-            <label class="label" for="baseUrl">API Base URL</label>
-            <input class="input" id="baseUrl" name="baseUrl" type="text" />
-          </div>
+        <section class="grid">
+            <article class="panel">
+                <h2 class="title">Request</h2>
+                <form id="form">
+                    <div class="field">
+                        <label class="label" for="baseUrl">API Base URL</label>
+                        <input class="input" id="baseUrl" name="baseUrl" type="text" />
+                    </div>
 
-          <div class="field">
-            <label class="label" for="imagePath">image_path</label>
-            <input class="input" id="imagePath" name="imagePath" type="text" placeholder="/mnt/storage/photos/car.jpg or https://.../car.jpg" required />
-            <div class="row">
-              <button class="chip" type="button" data-fill="https://raw.githubusercontent.com/opencv/opencv/master/samples/data/fruits.jpg">sample url</button>
-              <button class="chip" type="button" data-fill="/tmp/example-car.jpg">sample local path</button>
-            </div>
-          </div>
+                    <div class="field">
+                        <label class="label" for="imagePath">image_path</label>
+                        <input class="input" id="imagePath" name="imagePath" type="text"
+                            placeholder="/mnt/storage/photos/car.jpg or https://.../car.jpg" required />
+                        <div class="row">
+                            <button class="chip" type="button"
+                                data-fill="https://raw.githubusercontent.com/opencv/opencv/master/samples/data/fruits.jpg">sample
+                                url</button>
+                            <button class="chip" type="button" data-fill="/tmp/example-car.jpg">sample local
+                                path</button>
+                        </div>
+                    </div>
 
-          <button id="submitBtn" class="btn" type="submit">Detect Plate</button>
-        </form>
-      </article>
+                    <button id="submitBtn" class="btn" type="submit">Detect Plate</button>
+                </form>
+            </article>
 
-      <article class="panel">
-        <h2 class="title">Response</h2>
-        <div id="status" class="status">Ready</div>
-        <div class="kpi">
-          <div class="pill">
-            <span class="k">plate_text</span>
-            <span id="plateText" class="v">-</span>
-          </div>
-          <div class="pill">
-            <span class="k">confidence</span>
-            <span id="confidence" class="v">-</span>
-          </div>
-        </div>
+            <article class="panel">
+                <h2 class="title">Response</h2>
+                <div id="status" class="status">Ready</div>
+                <div class="kpi">
+                    <div class="pill">
+                        <span class="k">plate_text</span>
+                        <span id="plateText" class="v">-</span>
+                    </div>
+                    <div class="pill">
+                        <span class="k">confidence</span>
+                        <span id="confidence" class="v">-</span>
+                    </div>
+                </div>
 
-        <pre id="jsonOut">{}</pre>
+                <pre id="jsonOut">{}</pre>
 
-        <div class="preview" id="preview">
-          <span class="empty">No annotated image yet</span>
-        </div>
-      </article>
-    </section>
-  </main>
+                <div class="preview-grid">
+                    <section class="preview-card">
+                        <h3 class="preview-title">Input image</h3>
+                        <div class="preview" id="inputPreview">
+                            <span class="empty">No input image preview yet</span>
+                        </div>
+                    </section>
 
-  <script>
-    const form = document.getElementById("form");
-    const baseUrlInput = document.getElementById("baseUrl");
-    const imagePathInput = document.getElementById("imagePath");
-    const submitBtn = document.getElementById("submitBtn");
-    const statusEl = document.getElementById("status");
-    const plateTextEl = document.getElementById("plateText");
-    const confidenceEl = document.getElementById("confidence");
-    const jsonOutEl = document.getElementById("jsonOut");
-    const previewEl = document.getElementById("preview");
+                    <section class="preview-card">
+                        <h3 class="preview-title">Output image</h3>
+                        <div class="preview" id="outputPreview">
+                            <span class="empty">No annotated image yet</span>
+                        </div>
+                    </section>
+                </div>
+            </article>
+        </section>
+    </main>
 
-    baseUrlInput.value = window.location.origin;
+    <script>
+        const form = document.getElementById("form");
+        const baseUrlInput = document.getElementById("baseUrl");
+        const imagePathInput = document.getElementById("imagePath");
+        const submitBtn = document.getElementById("submitBtn");
+        const statusEl = document.getElementById("status");
+        const plateTextEl = document.getElementById("plateText");
+        const confidenceEl = document.getElementById("confidence");
+        const jsonOutEl = document.getElementById("jsonOut");
+        const inputPreviewEl = document.getElementById("inputPreview");
+        const outputPreviewEl = document.getElementById("outputPreview");
+        const REQUEST_TIMEOUT_MS = 90000;
+        const defaultSubmitText = submitBtn.textContent;
+        let progressTimer = 0;
 
-    document.querySelectorAll("[data-fill]").forEach((chip) => {
-      chip.addEventListener("click", () => {
-        imagePathInput.value = chip.dataset.fill;
-      });
-    });
+        baseUrlInput.value = window.location.origin;
 
-    function setStatus(message, ok) {
-      statusEl.textContent = message;
-      statusEl.classList.remove("ok", "bad");
-      statusEl.classList.add(ok ? "ok" : "bad");
-    }
+        document.querySelectorAll("[data-fill]").forEach((chip) => {
+            chip.addEventListener("click", () => {
+                imagePathInput.value = chip.dataset.fill;
+            });
+        });
 
-    function resetOutput() {
-      plateTextEl.textContent = "-";
-      confidenceEl.textContent = "-";
-      jsonOutEl.textContent = "{}";
-      previewEl.innerHTML = "<span class=\"empty\">No annotated image yet</span>";
-    }
-
-    async function callDetectPlate(baseUrl, imagePath) {
-      const url = baseUrl.replace(/\/$/, "") + "/detect-plate";
-      const startedAt = performance.now();
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image_path: imagePath })
-      });
-      const elapsed = Math.round(performance.now() - startedAt);
-      let payload = {};
-
-      try {
-        payload = await response.json();
-      } catch (err) {
-        payload = { detail: "Response is not valid JSON", error: String(err) };
-      }
-
-      return { response, payload, elapsed, url };
-    }
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-
-      const baseUrl = baseUrlInput.value.trim();
-      const imagePath = imagePathInput.value.trim();
-
-      if (!baseUrl || !imagePath) {
-        setStatus("Please fill API Base URL and image_path", false);
-        return;
-      }
-
-      submitBtn.disabled = true;
-      setStatus("Sending request...", true);
-      resetOutput();
-
-      try {
-        const { response, payload, elapsed, url } = await callDetectPlate(baseUrl, imagePath);
-        jsonOutEl.textContent = JSON.stringify(payload, null, 2);
-
-        if (!response.ok) {
-          const msg = "HTTP " + response.status + " in " + elapsed + " ms\n" + url;
-          setStatus(msg, false);
-          return;
+        function setStatus(message, ok) {
+            statusEl.textContent = message;
+            statusEl.classList.remove("ok", "bad");
+            statusEl.classList.add(ok ? "ok" : "bad");
         }
 
-        plateTextEl.textContent = payload.plate_text ?? "-";
-        confidenceEl.textContent = String(payload.confidence ?? "-");
-        setStatus("HTTP " + response.status + " in " + elapsed + " ms\n" + url, true);
-
-        if (payload.image_url) {
-          const img = document.createElement("img");
-          img.src = payload.image_url;
-          img.alt = "Annotated OCR result";
-          previewEl.innerHTML = "";
-          previewEl.appendChild(img);
+        function resetOutput() {
+            plateTextEl.textContent = "-";
+            confidenceEl.textContent = "-";
+            jsonOutEl.textContent = "{}";
+            outputPreviewEl.innerHTML = "<span class=\"empty\">No annotated image yet</span>";
         }
-      } catch (err) {
-        setStatus("Request failed: " + String(err), false);
-      } finally {
-        submitBtn.disabled = false;
-      }
-    });
-  </script>
+
+        function isHttpUrl(value) {
+            try {
+                const parsed = new URL(value);
+                return parsed.protocol === "http:" || parsed.protocol === "https:";
+            } catch (_err) {
+                return false;
+            }
+        }
+
+        function renderInputPreview(imagePath) {
+            if (!isHttpUrl(imagePath)) {
+                inputPreviewEl.innerHTML = "<span class=\"empty\">Input preview only works for http/https URL. Local server path cannot be previewed in browser.</span>";
+                return;
+            }
+
+            const img = document.createElement("img");
+            img.src = imagePath;
+            img.alt = "Input image";
+            img.loading = "lazy";
+            img.onerror = () => {
+                inputPreviewEl.innerHTML = "<span class=\"empty\">Failed to load input image preview.</span>";
+            };
+            inputPreviewEl.innerHTML = "";
+            inputPreviewEl.appendChild(img);
+        }
+
+        function renderOutputPreview(imageUrl) {
+            if (!imageUrl) {
+                outputPreviewEl.innerHTML = "<span class=\"empty\">No annotated image returned by server.</span>";
+                return;
+            }
+
+            const img = document.createElement("img");
+            img.src = imageUrl;
+            img.alt = "Annotated OCR result";
+            img.loading = "lazy";
+            img.onerror = () => {
+                outputPreviewEl.innerHTML = "<span class=\"empty\">Failed to load output image preview.</span>";
+            };
+            outputPreviewEl.innerHTML = "";
+            outputPreviewEl.appendChild(img);
+        }
+
+        function setBusy(busy) {
+            submitBtn.disabled = busy;
+            submitBtn.classList.toggle("is-loading", busy);
+            submitBtn.textContent = busy ? "Detecting..." : defaultSubmitText;
+        }
+
+        function startProgress(url) {
+            const startedAt = performance.now();
+            progressTimer = window.setInterval(() => {
+                const elapsedSec = ((performance.now() - startedAt) / 1000).toFixed(1);
+                setStatus("Processing request... " + elapsedSec + " s\n" + url, true);
+            }, 200);
+            return startedAt;
+        }
+
+        function stopProgress() {
+            if (progressTimer) {
+                window.clearInterval(progressTimer);
+                progressTimer = 0;
+            }
+        }
+
+        async function callDetectPlate(baseUrl, imagePath) {
+            const url = baseUrl.replace(/\/$/, "") + "/detect-plate";
+            const controller = new AbortController();
+            const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+            const startedAt = performance.now();
+            let response;
+            try {
+                response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ image_path: imagePath }),
+                    signal: controller.signal
+                });
+            } finally {
+                window.clearTimeout(timeoutId);
+            }
+            const elapsed = Math.round(performance.now() - startedAt);
+            let payload = {};
+
+            try {
+                payload = await response.json();
+            } catch (err) {
+                payload = { detail: "Response is not valid JSON", error: String(err) };
+            }
+
+            return { response, payload, elapsed, url };
+        }
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const baseUrl = baseUrlInput.value.trim();
+            const imagePath = imagePathInput.value.trim();
+
+            if (!baseUrl || !imagePath) {
+                setStatus("Please fill API Base URL and image_path", false);
+                return;
+            }
+
+            const url = baseUrl.replace(/\/$/, "") + "/detect-plate";
+            setBusy(true);
+            resetOutput();
+            renderInputPreview(imagePath);
+            const startedAt = startProgress(url);
+
+            try {
+                const { response, payload, elapsed, url } = await callDetectPlate(baseUrl, imagePath);
+                jsonOutEl.textContent = JSON.stringify(payload, null, 2);
+
+                if (!response.ok) {
+                    const msg = "HTTP " + response.status + " in " + elapsed + " ms\n" + url;
+                    setStatus(msg, false);
+                    return;
+                }
+
+                plateTextEl.textContent = payload.plate_text ?? "-";
+                confidenceEl.textContent = String(payload.confidence ?? "-");
+                setStatus("HTTP " + response.status + " in " + elapsed + " ms\n" + url, true);
+                renderOutputPreview(payload.image_url);
+            } catch (err) {
+                const elapsedSec = ((performance.now() - startedAt) / 1000).toFixed(1);
+                if (err && err.name === "AbortError") {
+                    setStatus("Request timeout after " + elapsedSec + " s", false);
+                } else {
+                    setStatus("Request failed after " + elapsedSec + " s: " + String(err), false);
+                }
+            } finally {
+                stopProgress();
+                setBusy(false);
+            }
+        });
+    </script>
 </body>
+
 </html>
