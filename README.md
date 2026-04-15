@@ -162,6 +162,30 @@ python run.py
 # → Interactive docs: http://localhost:8000/docs
 ```
 
+### Makefile Commands (from this directory)
+
+If you prefer shorter commands, use the included `Makefile`:
+
+```bash
+make help
+make install
+make dev
+make prod
+make test
+make test-file TEST=tests.test_metrics
+make docker-build
+make docker-run
+```
+
+Monitoring shortcuts are also available from this directory:
+
+```bash
+make monitoring-up
+make monitoring-down
+```
+
+Those targets automatically execute `docker compose --profile monitoring ...` from the parent project root.
+
 ---
 
 ## Running with Docker
